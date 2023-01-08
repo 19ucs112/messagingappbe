@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MessageFacade {
@@ -23,64 +24,89 @@ public class MessageFacade {
     private CustomerFacade customerFacade;
     @Autowired
     private ReplyMessageRepo replyMessageRepo;
-    public Message saveMessageDetails(Message message, int id){
-        try{
+
+    public Message saveMessageDetails(Message message, int id) {
+        try {
             Customer c = customerFacade.findById(id);
             message.setCustomer(c);
             message.setStatus(Status.pending);
             message.setDateTime(LocalDateTime.now());
             messageRepo.save(message);
             return message;
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getCause());
         }
     }
-    public List<Message> getAllMessages(){
-        try{
+
+    public List<Message> getAllMessages() {
+        try {
             List<Message> messageList = messageRepo.findAll();
             return messageList;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getCause());
         }
 
     }
-    public Message uploadMessageStatus(Message message, int id){
-        try{
+
+    public Message uploadMessageStatus(Message message, int id) {
+        try {
             Employee e = employeeFacade.findEmployeeById(id);
             message.setEmployee(e);
             message.setStatus(Status.replied);
             messageRepo.save(message);
             return message;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Error from backend");
         }
     }
-    public ReplyMessage saveReplyMessage(ReplyMessage message, int id){
-        try{
+
+    public ReplyMessage saveReplyMessage(ReplyMessage message, int id) {
+        try {
             Message m = findMessageById(id);
             message.setMessage(m);
             message.setDateTime(LocalDateTime.now());
             replyMessageRepo.save(message);
             return message;
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("error from backend");
         }
     }
-    public Message findMessageById(int id){
-        try{
+
+    public Message findMessageById(int id) {
+        try {
             Message message = messageRepo.findById(id).get();
             return message;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("error from backend");
         }
     }
-    public List<Message> getMessageByOption(String option){
-        try{
+
+    public List<Message> getMessageByOption(String option) {
+        try {
             List<Message> messageList = messageRepo.findMessageByOption(option);
             return messageList;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("error from backend");
+        }
+
+    }
+
+    public List<Message> getMessageByWord(String word) {
+        try {
+            List<Message> messageList = getAllMessages();
+            List<Message> lis = messageList.stream().filter(x -> (x.getMessage().contains(word))).collect(Collectors.toList());
+            return lis;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getCause());
+        }
+    }
+
+    public List<ReplyMessage> getAllRepliedMessages() {
+        try {
+            List<ReplyMessage> messageList = replyMessageRepo.findAll();
+            return messageList;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getCause());
         }
 
     }

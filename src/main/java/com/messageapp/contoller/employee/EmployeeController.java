@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmployeeController {
     @Autowired
     private EmployeeFacade employeeFacade;
+
     @PostMapping("/saveEmployeeDetails")
-    public ResponseEntity<Employee> saveEmployeeDetails(@RequestBody Employee employee){
+    public ResponseEntity<Employee> saveEmployeeDetails(@RequestBody Employee employee) {
         employeeFacade.saveEmployeeDetails(employee);
         return ResponseEntity.ok().body(employee);
     }

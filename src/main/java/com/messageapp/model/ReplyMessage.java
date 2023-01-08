@@ -13,6 +13,7 @@ public class ReplyMessage {
     @ManyToOne
     private Message message;
     private LocalDateTime dateTime;
+
     public int getId() {
         return id;
     }
@@ -33,15 +34,15 @@ public class ReplyMessage {
         return message;
     }
 
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
     }
 }
